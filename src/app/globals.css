@@ -1,0 +1,8 @@
+/* src/app/globals.css */
+@import "tailwindcss";
+
+/* You can add custom styles below this line */
+:root {
+  --background: #603636;
+  --foreground: #0f172a;
+}
