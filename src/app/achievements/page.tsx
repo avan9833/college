@@ -42,7 +42,7 @@ export default function AchievementPage() {
 
   return (
     <main className="min-h-screen bg-white selection:bg-orange-500 selection:text-white overflow-x-hidden">
-      <Navbar isScrolled={true} />
+      <Navbar />
 
       {/* --- ELITE HERO SECTION --- */}
       <section className="relative pt-44 pb-32 bg-slate-950 text-white overflow-hidden">

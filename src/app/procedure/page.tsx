@@ -41,7 +41,7 @@ export default function AdmissionProcedure() {
 
   return (
     <main className="min-h-screen bg-white selection:bg-orange-500 selection:text-white">
-      <Navbar isScrolled={true} />
+      <Navbar />
 
       {/* --- HEADER --- */}
       <section className="pt-32 pb-20 bg-slate-900 text-white text-center px-6">

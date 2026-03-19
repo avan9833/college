@@ -1,16 +1,24 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Navbar from "@/components/landing/Navbar";
 import { 
   BookOpen, Calendar, Bell, FileText, 
   Download, GraduationCap, Laptop, 
-  Clock, ArrowUpRight, Zap, MessageCircle 
+  Clock, ArrowUpRight, Zap, MessageCircle, LogOut 
 } from "lucide-react";
 
 export default function StudentsCorner() {
-  // FIX 1: Pass the component reference (Calendar), not the tag (<Calendar />)
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userRole");
+    router.push("/login");
+  };
+
   const primaryActions = [
     { title: "Exam Schedule", detail: "Finals: April 10", Icon: Calendar, color: "bg-blue-600", link: "/students-corner/exams" },
     { title: "Course Content", detail: "24 New Modules", Icon: BookOpen, color: "bg-orange-600", link: "/students-corner/courses" },
@@ -30,12 +38,21 @@ export default function StudentsCorner() {
       {/* --- HEADER --- */}
       <section className="pt-40 pb-12 bg-slate-900 text-white relative">
         <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-            <span className="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block">Student Command Center</span>
-            <h1 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter">
-              Welcome, <span className="text-orange-500">Vanguard.</span>
-            </h1>
-          </motion.div>
+          <div className="flex justify-between items-start">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+              <span className="text-orange-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block">Student Command Center</span>
+              <h1 className="text-5xl md:text-7xl font-black uppercase italic tracking-tighter">
+                Welcome, <span className="text-orange-500">Vanguard.</span>
+              </h1>
+            </motion.div>
+            
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-2 bg-white/5 hover:bg-red-600 transition-colors px-4 py-2 text-[10px] font-black uppercase tracking-widest border border-white/10"
+            >
+              <LogOut size={14} /> Logout
+            </button>
+          </div>
 
           <div className="mt-8 flex items-center gap-4 bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-sm overflow-hidden">
             <div className="bg-orange-600 text-white text-[8px] font-black px-2 py-1 uppercase rounded-sm animate-pulse whitespace-nowrap">Live Notice</div>
@@ -52,8 +69,6 @@ export default function StudentsCorner() {
 
       {/* --- DASHBOARD GRID --- */}
       <section className="py-12 max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-8">
-        
-        {/* LEFT: BENTO TILES */}
         <div className="lg:col-span-8 space-y-8">
           <div className="grid md:grid-cols-3 gap-6">
             {primaryActions.map((item, i) => (
@@ -63,7 +78,6 @@ export default function StudentsCorner() {
                   whileTap={{ scale: 0.98 }}
                   className={`${item.color} p-8 text-white shadow-xl flex flex-col justify-between h-64 relative overflow-hidden group cursor-pointer`}
                 >
-                  {/* FIX 2: Render as a component <item.Icon /> */}
                   <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:scale-150 transition-transform duration-500">
                       <item.Icon size={100} />
                   </div>
@@ -79,7 +93,6 @@ export default function StudentsCorner() {
             ))}
           </div>
 
-          {/* RECENT ACTIVITY */}
           <div className="bg-white border border-slate-100 p-10 shadow-2xl">
             <h2 className="text-2xl font-black uppercase tracking-tighter mb-8 flex items-center gap-3">
               <Clock className="text-orange-600" /> Recent Updates
@@ -102,7 +115,6 @@ export default function StudentsCorner() {
           </div>
         </div>
 
-        {/* RIGHT: SIDEBAR */}
         <div className="lg:col-span-4 space-y-8">
           <div className="bg-slate-900 p-8 text-white">
             <h3 className="text-xl font-black uppercase tracking-tighter mb-8 border-b border-white/10 pb-4">Resources</h3>

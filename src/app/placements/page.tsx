@@ -34,7 +34,7 @@ export default function PlacementPage() {
 
   return (
     <main className="min-h-screen bg-white selection:bg-orange-500 selection:text-white">
-      <Navbar isScrolled={true} />
+      <Navbar />
 
       {/* --- HERO SECTION: HIGH-IMPACT GRADIENT --- */}
       <section className="relative pt-40 pb-32 bg-slate-950 overflow-hidden">

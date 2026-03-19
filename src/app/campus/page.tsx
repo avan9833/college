@@ -21,7 +21,7 @@ export default function CampusPage() {
   return (
     <main className="min-h-screen bg-white selection:bg-orange-500 selection:text-white">
       {/* Navbar always active on sub-pages */}
-      <Navbar isScrolled={true} />
+      <Navbar />
 
       {/* --- HERO SECTION: FIXED VISUALS --- */}
       <section className="relative h-[70vh] flex items-end pb-24 overflow-hidden bg-white">
@@ -72,18 +72,16 @@ export default function CampusPage() {
                 </div>
               ))}
             </div>
-          </div>
+          </div> 
         </div>
       </section>
 
       {/* --- MASONRY GALLERY --- */}
       <section className="py-24 max-w-7xl mx-auto px-6">
         <div className="columns-1 md:columns-3 gap-6 space-y-6">
+          
           <div className="relative group overflow-hidden rounded-sm bg-slate-100">
-            <img src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?q=80&w=2070" alt="Block A" className="group-hover:scale-110 transition-transform duration-700" />
-          </div>
-          <div className="relative group overflow-hidden rounded-sm bg-slate-100">
-            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070" alt="Library" className="group-hover:scale-110 transition-transform duration-700" />
+            <img src="/library/collegelib.jpg" alt="Library" className="group-hover:scale-110 transition-transform duration-700" />
           </div>
           <div className="relative group overflow-hidden rounded-sm bg-slate-100">
             <img src="https://images.unsplash.com/photo-1592280771190-3e2e4d571952?q=80&w=1974" alt="Accommodation" className="group-hover:scale-110 transition-transform duration-700" />

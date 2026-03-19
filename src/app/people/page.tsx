@@ -64,7 +64,7 @@ export default function StaffPage() {
       name: "Ms. Rachel Green",
       role: "Placement Director",
       dept: "Corporate Relations",
-      image: "https://images.unsplash.com/photo-1567532939604-b6c5b0ad2e01?q=80&w=800",
+      image: "/non-teaching/non.png",
       bio: "Specializes in building international recruitment pipelines."
     }
   ];

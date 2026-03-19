@@ -96,9 +96,9 @@ export default function ContactPage() {
             {/* Info Cards */}
             <div className="grid gap-4">
               {[
-                { icon: <Phone />, title: "Call Center", info: "+91 123 456 7890", sub: "Mon-Sat, 9AM-6PM" },
+                { icon: <Phone />, title: "Call Center", info: "+91 9833602082", sub: "Mon-Sat, 9AM-6PM" },
                 { icon: <Mail />, title: "Email Support", info: "support@vitnode.edu", sub: "24/7 Response time" },
-                { icon: <MapPin />, title: "Campus Address", info: "Sector 12, Navi Mumbai", sub: "Maharashtra, India" }
+                { icon: <MapPin />, title: "Campus Address", info: "maharahstra,buddh nagar india", sub: "Maharashtra, India" }
               ].map((item, i) => (
                 <div key={i} className="bg-slate-50 p-8 border-l-4 border-orange-600 group hover:bg-white hover:shadow-xl transition-all">
                   <div className="text-slate-300 group-hover:text-orange-600 transition-colors mb-4">{item.icon}</div>
