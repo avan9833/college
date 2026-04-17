@@ -6,3 +6,10 @@
   --background: #603636;
   --foreground: #0f172a;
 }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}

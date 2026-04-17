@@ -1,46 +1,34 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Search, Book, Bookmark, 
   CheckCircle, Clock, Filter, ChevronRight, 
-  Info, Library, Hash
+  Info, Library, Hash, Globe, Eye,
+  Download, Zap, ShieldCheck, AlertTriangle
 } from "lucide-react";
 
-// Expanded Mock Library Data
+// --- ENHANCED BOOK DATA ---
 const BOOKS = [
-  // Computer Science & AI
-  { id: 1, title: "Modern Quantum Mechanics", author: "J.J. Sakurai", category: "Physics", status: "Available", isbn: "978-011" },
-  { id: 2, title: "Neural Networks & Deep Learning", author: "Michael Nielsen", category: "AI/ML", status: "Reserved", isbn: "978-024" },
-  { id: 3, title: "Discrete Mathematics", author: "Kenneth Rosen", category: "Math", status: "Available", isbn: "978-055" },
-  { id: 4, title: "Algorithms Unlocked", author: "Thomas Cormen", category: "CS", status: "Borrowed", isbn: "978-099" },
-  { id: 5, title: "Clean Code", author: "Robert C. Martin", category: "CS", status: "Available", isbn: "978-105" },
-  { id: 6, title: "The Pragmatic Programmer", author: "Andrew Hunt", category: "CS", status: "Available", isbn: "978-108" },
-  
-  // Electronics & Hardware
-  { id: 7, title: "Digital Design", author: "M. Morris Mano", category: "Electronics", status: "Available", isbn: "978-201" },
-  { id: 8, title: "Microelectronic Circuits", author: "Adel Sedra", category: "Electronics", status: "Borrowed", isbn: "978-205" },
-  
-  // Management & Soft Skills
-  { id: 9, title: "Zero to One", author: "Peter Thiel", category: "Management", status: "Available", isbn: "978-301" },
-  { id: 10, title: "Atomic Habits", author: "James Clear", category: "Self-Help", status: "Available", isbn: "978-305" },
-  { id: 11, title: "Start with Why", author: "Simon Sinek", category: "Management", status: "Reserved", isbn: "978-310" },
-  
-  // Advanced Science
-  { id: 12, title: "A Brief History of Time", author: "Stephen Hawking", category: "Physics", status: "Available", isbn: "978-401" },
-  { id: 13, title: "Genetics: A Conceptual Approach", author: "Benjamin Pierce", category: "Biology", status: "Available", isbn: "978-405" },
-  { id: 14, title: "Organic Chemistry", author: "Jonathan Clayden", category: "Chemistry", status: "Borrowed", isbn: "978-410" },
+  { id: 1, title: "Modern Quantum Mechanics", author: "J.J. Sakurai", category: "Physics", status: "Available", isbn: "978-011", pages: 520, type: "Digital + Physical" },
+  { id: 2, title: "Neural Networks & Deep Learning", author: "Michael Nielsen", category: "AI/ML", status: "Reserved", isbn: "978-024", pages: 380, type: "Digital Only" },
+  { id: 3, title: "Discrete Mathematics", author: "Kenneth Rosen", category: "Math", status: "Available", isbn: "978-055", pages: 800, type: "Physical Only" },
+  { id: 4, title: "Algorithms Unlocked", author: "Thomas Cormen", category: "CS", status: "Borrowed", isbn: "978-099", pages: 240, type: "Digital + Physical" },
+  { id: 5, title: "Clean Code", author: "Robert C. Martin", category: "CS", status: "Available", isbn: "978-105", pages: 464, type: "Digital + Physical" },
+  { id: 6, title: "The Pragmatic Programmer", author: "Andrew Hunt", category: "CS", status: "Available", isbn: "978-108", pages: 352, type: "Digital + Physical" },
+  { id: 9, title: "Zero to One", author: "Peter Thiel", category: "Management", status: "Available", isbn: "978-301", pages: 224, type: "Digital Only" },
+  { id: 12, title: "A Brief History of Time", author: "Stephen Hawking", category: "Physics", status: "Available", isbn: "978-401", pages: 256, type: "Digital + Physical" },
 ];
 
-const CATEGORIES = ["All", "CS", "AI/ML", "Physics", "Math", "Electronics", "Management", "Self-Help", "Biology", "Chemistry"];
+const CATEGORIES = ["All", "CS", "AI/ML", "Physics", "Math", "Electronics", "Management", "Biology"];
 
 export default function LibraryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [borrowingId, setBorrowingId] = useState<number | null>(null);
+  const [wishlist, setWishlist] = useState<number[]>([]);
 
-  // Logic: Search by Title, Author, or ISBN + Category Filter
   const filteredBooks = BOOKS.filter(book => {
     const matchesSearch = 
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -52,154 +40,185 @@ export default function LibraryPage() {
 
   const handleBorrow = (id: number) => {
     setBorrowingId(id);
-    // Simulate Request
     setTimeout(() => {
       setBorrowingId(null);
-      alert("Borrow Request Transmitted. Please collect your physical copy from the Registry Desk.");
+      alert("SUCCESS: Secure Link generated. Physical copy reserved at Central Node.");
     }, 1500);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Available': return 'bg-emerald-500';
-      case 'Reserved': return 'bg-orange-500';
-      case 'Borrowed': return 'bg-red-500';
-      default: return 'bg-slate-500';
-    }
+  const toggleWishlist = (id: number) => {
+    setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] p-6 pt-24">
-      <div className="max-w-7xl mx-auto">
+    <main className="min-h-screen bg-[#FDFDFD] selection:bg-orange-600 selection:text-white font-sans">
+      
+      {/* --- TOP HUD NAVIGATION --- */}
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Link href="/students-corner" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-orange-600 transition-all group">
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Registry Core
+          </Link>
+          <div className="flex items-center gap-4">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Node Status:</span>
+            <div className="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-[9px] font-black uppercase">Online</span>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <section className="pt-32 pb-20 max-w-7xl mx-auto px-6">
         
         {/* --- HEADER --- */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
-          <div>
-            <Link href="/students-corner" className="group text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-orange-600 flex items-center gap-2 mb-2 transition">
-              <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform"/> Back to Corner
-            </Link>
-            <h1 className="text-4xl md:text-5xl font-black uppercase italic tracking-tighter text-slate-900 leading-none">
-              Digital <span className="text-orange-600">Archives.</span>
+        <div className="flex flex-col lg:flex-row justify-between items-end gap-10 mb-16">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+            <div className="flex items-center gap-3 mb-4">
+               <Zap className="text-orange-600" size={20} />
+               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">Knowledge Repository</span>
+            </div>
+            <h1 className="text-7xl md:text-8xl font-black uppercase italic tracking-tighter text-slate-950 leading-[0.85]">
+              Digital <br /> <span className="text-transparent stroke-slate-950" style={{ WebkitTextStroke: '2px #020617' }}>Archives.</span>
             </h1>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-2">
-              B.Tech Library Node | Active Collection: {BOOKS.length} Resources
-            </p>
-          </div>
+          </motion.div>
 
-          <div className="bg-slate-900 p-4 border-l-4 border-orange-600 shadow-xl flex items-center gap-6">
-             <div className="text-center px-4">
-                <p className="text-[9px] font-black text-slate-400 uppercase">Loans</p>
-                <p className="text-xl font-black text-white italic">03</p>
+          <div className="flex items-center gap-6 bg-slate-950 p-6 rounded-[2rem] shadow-2xl border border-white/10">
+             <div className="text-center px-6">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Active Loans</p>
+                <p className="text-3xl font-black text-white italic">03</p>
              </div>
-             <div className="text-center px-4 border-l border-white/10">
-                <p className="text-[9px] font-black text-slate-400 uppercase">Penalty</p>
-                <p className="text-xl font-black text-orange-500 italic">₹0.00</p>
+             <div className="w-px h-12 bg-white/10" />
+             <div className="text-center px-6">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Node Credits</p>
+                <p className="text-3xl font-black text-orange-500 italic">840</p>
              </div>
           </div>
         </div>
 
-        {/* --- SEARCH & FILTERS --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-10">
-          <div className="lg:col-span-3 relative">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+        {/* --- DYNAMIC FILTER BAR --- */}
+        <div className="flex flex-col md:flex-row gap-6 mb-12">
+          <div className="relative flex-1 group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-orange-600 transition-colors" size={20} />
             <input 
               type="text"
-              placeholder="Search by Title, Author, or ISBN..."
+              placeholder="SEARCH BY IDENTIFIER, AUTHOR, OR SUBJECT..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border-2 border-slate-100 p-5 pl-14 outline-none focus:border-orange-500 transition-all font-bold text-sm shadow-sm"
+              className="w-full bg-white border-2 border-slate-100 p-6 pl-16 rounded-3xl outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all font-bold text-xs tracking-widest uppercase shadow-sm"
             />
           </div>
-          <div className="relative">
-            <Filter className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <select 
-              value={activeCategory}
-              onChange={(e) => setActiveCategory(e.target.value)}
-              className="w-full bg-white border-2 border-slate-100 p-5 pl-14 outline-none focus:border-orange-500 transition-all font-black uppercase text-[10px] tracking-widest cursor-pointer appearance-none shadow-sm"
-            >
-              {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat} Resources</option>)}
-            </select>
+          
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border-2 whitespace-nowrap ${
+                  activeCategory === cat 
+                  ? "bg-slate-950 text-white border-slate-950 shadow-xl shadow-slate-900/20" 
+                  : "bg-white text-slate-400 border-slate-100 hover:border-orange-500 hover:text-orange-600"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* --- BOOK GRID --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* --- RESOURCE GRID --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredBooks.map((book) => (
               <motion.div 
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                key={book.id}
-                className="bg-white border border-slate-200 p-8 shadow-md hover:shadow-2xl hover:border-orange-600 transition-all group flex flex-col justify-between"
+                layout key={book.id}
+                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+                whileHover={{ y: -10 }}
+                className="bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] hover:shadow-2xl hover:border-orange-600/30 transition-all group relative overflow-hidden"
               >
-                <div>
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="text-[9px] font-black text-orange-600 uppercase tracking-widest bg-orange-50 px-2 py-1">
-                      {book.category}
-                    </span>
-                    <Bookmark size={16} className="text-slate-200 hover:text-orange-600 cursor-pointer transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-black text-slate-900 uppercase italic leading-tight mb-2 group-hover:text-orange-600 transition-colors h-14">
-                    {book.title}
-                  </h3>
-                  <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 italic">By {book.author}</p>
-                  
-                  <div className="flex items-center gap-2 mb-8">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(book.status)}`} />
-                    <span className="text-[10px] font-black uppercase text-slate-400">{book.status}</span>
-                  </div>
+                {/* Book Type Icon Background */}
+                <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                  <Library size={120} />
                 </div>
 
-                <div className="space-y-3">
-                  <div className="flex justify-between text-[9px] font-bold text-slate-300 uppercase mb-2">
-                    <span className="flex items-center gap-1"><Hash size={10} /> {book.isbn}</span>
-                    <span>Ref: LIB-{book.id}00X</span>
+                <div className="relative z-10">
+                  <div className="flex justify-between items-start mb-8">
+                    <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[8px] font-black uppercase tracking-widest rounded-full">
+                      {book.category}
+                    </span>
+                    <button onClick={() => toggleWishlist(book.id)}>
+                      <Bookmark size={18} className={wishlist.includes(book.id) ? "fill-orange-600 text-orange-600" : "text-slate-200 hover:text-orange-600 transition-colors"} />
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => handleBorrow(book.id)}
-                    disabled={book.status !== 'Available' || borrowingId !== null}
-                    className={`w-full py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${
-                      book.status === 'Available' 
-                      ? 'bg-slate-900 text-white hover:bg-orange-600 shadow-lg' 
-                      : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                    }`}
-                  >
-                    {borrowingId === book.id ? (
-                      "Syncing..."
-                    ) : book.status === 'Available' ? (
-                      <><CheckCircle size={14} /> Request Loan</>
-                    ) : (
-                      <><Clock size={14} /> Unavailable</>
-                    )}
-                  </button>
+
+                  <h3 className="text-xl font-black text-slate-950 uppercase italic tracking-tighter leading-tight mb-2 group-hover:text-orange-600 transition-colors h-14 overflow-hidden">
+                    {book.title}
+                  </h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6 italic">Personnel: {book.author}</p>
+                  
+                  <div className="space-y-3 mb-8">
+                    <div className="flex items-center justify-between text-[9px] font-black uppercase">
+                       <span className="text-slate-300">Format</span>
+                       <span className="text-slate-600">{book.type}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[9px] font-black uppercase">
+                       <span className="text-slate-300">Volume</span>
+                       <span className="text-slate-600">{book.pages} Pages</span>
+                    </div>
+                    <div className="flex items-center gap-2 pt-2">
+                      <div className={`w-2 h-2 rounded-full animate-pulse ${
+                        book.status === 'Available' ? 'bg-emerald-500' : book.status === 'Reserved' ? 'bg-orange-500' : 'bg-red-500'
+                      }`} />
+                      <span className="text-[9px] font-black uppercase text-slate-400 tracking-widest">{book.status}</span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <button 
+                      onClick={() => handleBorrow(book.id)}
+                      disabled={book.status !== 'Available' || borrowingId !== null}
+                      className={`py-4 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 ${
+                        book.status === 'Available' 
+                        ? 'bg-slate-950 text-white hover:bg-orange-600 shadow-lg' 
+                        : 'bg-slate-50 text-slate-300 cursor-not-allowed'
+                      }`}
+                    >
+                      {borrowingId === book.id ? "Syncing..." : "Borrow"}
+                    </button>
+                    <button className="py-4 bg-slate-50 text-slate-400 hover:bg-slate-100 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+                       <Eye size={12} /> Preview
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
         </div>
 
-        {/* --- EMPTY STATE --- */}
-        {filteredBooks.length === 0 && (
-          <div className="text-center py-20 border-2 border-dashed border-slate-200 mt-10">
-            <Library size={48} className="mx-auto text-slate-200 mb-4" />
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Resource not found in Vanguard Database.</p>
-          </div>
-        )}
-
-        {/* --- ALERT BOX --- */}
-        <div className="mt-16 bg-blue-50 border border-blue-100 p-6 flex items-start gap-4">
-          <Info className="text-blue-600 shrink-0" size={20} />
-          <p className="text-[10px] font-bold text-blue-700 leading-relaxed uppercase">
-            Reserved resources must be claimed within 24 hours. Failure to return borrowed books by the due date results in a ₹10/day penalty.
-          </p>
+        {/* --- SECURITY NOTICE --- */}
+        <div className="mt-20 p-8 bg-slate-950 rounded-[3rem] border border-white/10 relative overflow-hidden group">
+           <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+              <div className="flex items-center gap-6">
+                 <div className="p-4 bg-orange-600 rounded-2xl shadow-lg">
+                    <ShieldCheck className="text-white" size={24} />
+                 </div>
+                 <div>
+                    <h4 className="text-white font-black uppercase italic tracking-widest text-lg">Vanguard Academic Integrity</h4>
+                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">All borrowed resources are encrypted with your Student ID Node.</p>
+                 </div>
+              </div>
+              <p className="text-[10px] font-bold text-orange-500 bg-orange-500/10 px-4 py-2 rounded-full border border-orange-500/20 uppercase tracking-[0.2em]">
+                 Penalty Protocol: ₹10.00 / Cycle
+              </p>
+           </div>
+           <Zap className="absolute -right-10 -bottom-10 size-48 text-white/5 group-hover:scale-110 transition-transform duration-700" />
         </div>
 
-        <footer className="mt-20 text-center pb-10">
-          <p className="text-[10px] font-black text-slate-300 uppercase tracking-[1em]">Vanguard Library Node • 2026</p>
-        </footer>
-      </div>
+      </section>
+
+      <footer className="py-12 text-center border-t border-slate-100 opacity-20 italic">
+        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[1em]">Vanguard_Archive_Subnode_2026</p>
+      </footer>
     </main>
   );
 }

@@ -25,6 +25,21 @@ export default function StaffPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // --- BUTTON HANDLERS ---
+  const handleEmailClick = (name: string) => {
+    const subject = encodeURIComponent(`Inquiry for ${name} - Vanguard University`);
+    window.location.href = `mailto:contact@vanguard.edu?subject=${subject}`;
+  };
+
+  const handleLinkedinClick = (name: string) => {
+    const searchUrl = `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(name + " Vanguard University")}`;
+    window.open(searchUrl, "_blank");
+  };
+
+  const handleCTAClick = () => {
+    window.location.href = "/careers"; // Redirects to your careers node
+  };
+
   const teachingStaff: StaffMember[] = [
     {
       name: "Dr. Elena Vance",
@@ -130,8 +145,18 @@ export default function StaffPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all flex gap-4">
-                    <button className="p-2 bg-orange-600 text-white rounded-full"><Mail className="w-4 h-4" /></button>
-                    <button className="p-2 bg-white text-slate-900 rounded-full"><Linkedin className="w-4 h-4" /></button>
+                    <button 
+                      onClick={() => handleEmailClick(member.name)}
+                      className="p-2 bg-orange-600 text-white rounded-full hover:scale-110 active:scale-95 transition-all"
+                    >
+                      <Mail className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => handleLinkedinClick(member.name)}
+                      className="p-2 bg-white text-slate-900 rounded-full hover:scale-110 active:scale-95 transition-all"
+                    >
+                      <Linkedin className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 
@@ -161,7 +186,10 @@ export default function StaffPage() {
       <section className="py-24 bg-slate-50 text-center">
         <h3 className="text-3xl font-black uppercase tracking-tighter mb-4">Aspire to Inspire?</h3>
         <p className="text-slate-400 text-sm mb-10 max-w-sm mx-auto uppercase font-bold tracking-widest">We are always looking for global academic talent.</p>
-        <button className="px-12 py-5 bg-slate-900 text-white font-black uppercase tracking-[0.2em] text-xs hover:bg-orange-600 transition-all shadow-2xl">
+        <button 
+          onClick={handleCTAClick}
+          className="px-12 py-5 bg-slate-900 text-white font-black uppercase tracking-[0.2em] text-xs hover:bg-orange-600 transition-all shadow-2xl active:scale-95"
+        >
           View Open Positions
         </button>
       </section>
